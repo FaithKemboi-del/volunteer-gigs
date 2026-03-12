@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import type { Opportunity } from '../types'
 
 interface StatItem {
   icon: string
@@ -31,6 +32,56 @@ const popularTags: PopularTag[] = [
   { id: 7, name: 'Maziwa Methodist Church' },
 ]
 
+const featuredOpportunities: Opportunity[] = [
+  {
+    id: 1,
+    title: 'KSPCA Visit',
+    organization: 'Kenya Society for the Protection and Care of Animals',
+    category: 'Animal Welfare',
+    location: 'Karen, Nairobi',
+    description: 'Visit and care for rescued animals at KSPCA. Help with feeding, grooming, walking dogs, and socializing animals to prepare them for adoption.',
+    activities: ['Feeding animals', 'Dog walking', 'Grooming', 'Socialization'],
+    timing: 'Sat 9am–1pm',
+    totalSlots: 204,
+    registeredCount: 189,
+    image: 'https://placehold.co/600x400/1a3a5c/white?text=KSPCA+Visit',
+  },
+  {
+    id: 2,
+    title: 'Hospice Nairobi',
+    organization: 'Nairobi Hospice',
+    category: 'Healthcare',
+    location: 'Nairobi, Kenya',
+    description: 'Provide companionship and emotional support to patients receiving palliative care. Read, chat, or simply be present for patients and families.',
+    activities: ['Companionship', 'Reading to patients', 'Emotional support', 'Family assistance'],
+    timing: 'Wed & Fri 10am–1pm',
+    totalSlots: 144,
+    registeredCount: 134,
+    image: 'https://placehold.co/600x400/1a3a5c/white?text=Hospice+Nairobi',
+  },
+  {
+    id: 3,
+    title: 'Karura Forest Cleanup',
+    organization: 'Friends of Karura Forest',
+    category: 'Environment',
+    location: 'Karura, Nairobi',
+    description: 'Join us in keeping Karura Forest clean and green. Help with litter collection, tree planting, and trail maintenance.',
+    activities: ['Litter collection', 'Tree planting', 'Trail maintenance', 'Environmental education'],
+    timing: 'Every Saturday 7am–11am',
+    totalSlots: 80,
+    registeredCount: 45,
+    image: 'https://placehold.co/600x400/1a3a5c/white?text=Karura+Cleanup',
+  },
+]
+
+const categoryColors: Record<string, string> = {
+  'Animal Welfare': 'bg-orange-100 text-orange-700',
+  'Healthcare': 'bg-blue-100 text-blue-700',
+  'Education': 'bg-purple-100 text-purple-700',
+  'Environment': 'bg-green-100 text-green-700',
+  'Community': 'bg-pink-100 text-pink-700',
+}
+
 function useCountUp(target: number, duration: number = 4000): number {
   const [count, setCount] = useState<number>(0)
 
@@ -39,7 +90,6 @@ function useCountUp(target: number, duration: number = 4000): number {
     const increment = target / steps
     const stepDuration = duration / steps
     let current = 0
-
     const timer = setInterval(() => {
       current += increment
       if (current >= target) {
@@ -49,7 +99,6 @@ function useCountUp(target: number, duration: number = 4000): number {
         setCount(Math.floor(current))
       }
     }, stepDuration)
-
     return () => clearInterval(timer)
   }, [target, duration])
 
@@ -90,6 +139,99 @@ function StatCard({ stat, index }: StatCardProps) {
   )
 }
 
+interface FeaturedCardProps {
+  opportunity: Opportunity
+}
+
+function FeaturedCard({ opportunity }: FeaturedCardProps) {
+  const spotsLeft: number = opportunity.totalSlots - opportunity.registeredCount
+  const percentFilled: number = Math.round(
+    (opportunity.registeredCount / opportunity.totalSlots) * 100
+  )
+
+  return (
+    <div className="
+      bg-white rounded-2xl overflow-hidden shadow-md
+      hover:shadow-xl transition-all duration-300
+      hover:-translate-y-2 flex flex-col border border-gray-100
+    ">
+      {/* Image */}
+      <div className="relative overflow-hidden h-48">
+        <img
+          src={opportunity.image}
+          alt={opportunity.title}
+          className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+        />
+        <span className={`
+          absolute top-3 left-3 text-xs font-semibold px-3 py-1 rounded-full
+          ${categoryColors[opportunity.category]}
+        `}>
+          {opportunity.category}
+        </span>
+        <span className="absolute top-3 right-3 text-xs font-bold px-3 py-1 rounded-full bg-white text-gray-700">
+          {spotsLeft} spots left
+        </span>
+      </div>
+
+      {/* Content */}
+      <div className="p-5 flex flex-col flex-1">
+        <h3 className="text-lg font-bold text-gray-800 mb-1">
+          {opportunity.title}
+        </h3>
+        <p className="text-[#38bdf8] text-sm font-medium mb-3">
+          {opportunity.organization}
+        </p>
+
+        {/* Description with inline Learn More */}
+        <p className="text-gray-500 text-sm leading-relaxed mb-4">
+          {opportunity.description.slice(0, 100)}...{' '}
+          <Link
+            to="/opportunities"
+            className="text-[#38bdf8] font-semibold hover:underline"
+          >
+            Learn More
+          </Link>
+        </p>
+
+        {/* Progress bar */}
+        <div className="mb-4">
+          <div className="flex justify-between text-xs text-gray-400 mb-1">
+            <span>{opportunity.registeredCount} registered</span>
+            <span>{opportunity.totalSlots} total</span>
+          </div>
+          <div className="w-full bg-gray-100 rounded-full h-1.5">
+            <div
+              className={`h-1.5 rounded-full ${percentFilled >= 90 ? 'bg-red-400' : 'bg-[#38bdf8]'}`}
+              style={{ width: `${percentFilled}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Info */}
+        <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-4">
+          <span>📍 {opportunity.location}</span>
+          <span>⏰ {opportunity.timing}</span>
+        </div>
+
+        {/* Sign Up to Volunteer button */}
+        <div className="mt-auto pt-3 border-t border-gray-100">
+          <Link
+            to="/opportunities"
+            className="
+              w-full flex items-center justify-center
+              bg-[#38bdf8] hover:bg-[#0ea5e9]
+              text-white py-2.5 rounded-xl
+              text-sm font-semibold transition duration-200
+            "
+          >
+            Sign Up to Volunteer →
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Home() {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [activeTag, setActiveTag] = useState<number | null>(null)
@@ -109,17 +251,11 @@ function Home() {
       {/* HERO SECTION */}
       <section className="
         bg-gradient-to-br from-[#0f2942] via-[#1a3a5c] to-[#0d3158]
-        pt-16 pb-16
-        flex flex-col items-center justify-center
-        px-8 text-center
-        relative overflow-hidden
-        w-full
+        pt-16 pb-16 flex flex-col items-center justify-center
+        px-8 text-center relative overflow-hidden w-full
       ">
-
-        {/* Decorative circles */}
         <div className="pointer-events-none absolute top-0 left-0 w-96 h-96 bg-blue-500 opacity-10 rounded-full blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 right-0 w-96 h-96 bg-cyan-400 opacity-10 rounded-full blur-3xl" />
-        <div className="pointer-events-none absolute top-1/2 left-1/4 w-64 h-64 bg-blue-300 opacity-5 rounded-full blur-2xl" />
 
         {/* Badge */}
         <span className={`
@@ -132,7 +268,7 @@ function Home() {
           ✨ Make a difference today
         </span>
 
-        {/* White heading */}
+        {/* Headings */}
         <h1 className={`
           text-6xl md:text-7xl font-bold text-white mb-2
           transition-all duration-700 delay-100
@@ -140,8 +276,6 @@ function Home() {
         `}>
           Find Your Next
         </h1>
-
-        {/* Blue heading */}
         <h1 className={`
           text-6xl md:text-7xl font-bold text-[#38bdf8] mb-6
           transition-all duration-700 delay-200
@@ -160,7 +294,7 @@ function Home() {
           opportunities and make an impact across Kenya.
         </p>
 
-        {/* SEARCH BAR */}
+        {/* Search bar */}
         <div className={`
           flex items-center bg-white rounded-xl shadow-2xl
           overflow-hidden w-full max-w-3xl mb-8
@@ -177,13 +311,13 @@ function Home() {
           />
           <Link
             to="/opportunities"
-            className="bg-[#38bdf8] hover:bg-[#0ea5e9] text-white px-8 py-5 font-semibold text-sm transition duration-200 flex items-center gap-2"
+            className="bg-[#38bdf8] hover:bg-[#0ea5e9] text-white px-8 py-5 font-semibold text-sm transition duration-200"
           >
             🔍 Search
           </Link>
         </div>
 
-        {/* POPULAR TAGS */}
+        {/* Popular tags */}
         <div className={`
           flex flex-wrap justify-center gap-2 w-full max-w-5xl
           transition-all duration-700 delay-700
@@ -195,8 +329,7 @@ function Home() {
               key={tag.id}
               onClick={() => setActiveTag(tag.id === activeTag ? null : tag.id)}
               className={`
-                text-sm px-4 py-1.5 rounded-full
-                transition-all duration-200
+                text-sm px-4 py-1.5 rounded-full transition-all duration-200
                 ${activeTag === tag.id
                   ? 'bg-[#38bdf8] text-white border border-[#38bdf8]'
                   : 'border border-blue-400 border-opacity-40 text-blue-200 hover:bg-blue-500 hover:bg-opacity-20'
@@ -215,6 +348,86 @@ function Home() {
           {stats.map((stat, index) => (
             <StatCard key={index} stat={stat} index={index} />
           ))}
+        </div>
+      </section>
+
+      {/* FEATURED OPPORTUNITIES SECTION */}
+      <section className="bg-gray-50 py-16 px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                Featured Opportunities
+              </h2>
+              <p className="text-gray-500">
+                Handpicked volunteer gigs making a real difference
+              </p>
+            </div>
+            <Link
+              to="/opportunities"
+              className="
+                hidden md:flex items-center gap-2
+                bg-[#38bdf8] hover:bg-[#0ea5e9]
+                text-white px-6 py-3 rounded-xl
+                font-semibold text-sm transition duration-200
+              "
+            >
+              View All →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredOpportunities.map((opportunity) => (
+              <FeaturedCard key={opportunity.id} opportunity={opportunity} />
+            ))}
+          </div>
+
+          <div className="mt-8 text-center md:hidden">
+            <Link
+              to="/opportunities"
+              className="bg-[#38bdf8] text-white px-8 py-3 rounded-xl font-semibold text-sm hover:bg-[#0ea5e9] transition"
+            >
+              View All Opportunities →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* CALL TO ACTION SECTION */}
+      <section className="
+        bg-gradient-to-br from-[#0f2942] via-[#1a3a5c] to-[#0d3158]
+        py-20 px-8 text-center
+      ">
+        <h2 className="text-4xl font-bold text-white mb-4">
+          Ready to Make a Difference?
+        </h2>
+        <p className="text-blue-200 text-lg max-w-xl mx-auto mb-10">
+          Join thousands of volunteers across Kenya and start
+          your journey today. Every hour you give matters!
+        </p>
+        <div className="flex items-center justify-center gap-4 flex-wrap">
+          <Link
+            to="/signup"
+            className="
+              bg-[#38bdf8] hover:bg-[#0ea5e9]
+              text-white px-8 py-4 rounded-xl
+              font-bold text-base transition duration-200
+              shadow-lg hover:shadow-xl
+            "
+          >
+            Get Started Today →
+          </Link>
+          <Link
+            to="/opportunities"
+            className="
+              border-2 border-blue-400 border-opacity-50
+              text-blue-200 px-8 py-4 rounded-xl
+              font-bold text-base transition duration-200
+              hover:bg-blue-500 hover:bg-opacity-20
+            "
+          >
+            Browse Opportunities
+          </Link>
         </div>
       </section>
 
