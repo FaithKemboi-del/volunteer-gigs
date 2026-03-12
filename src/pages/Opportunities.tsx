@@ -1,8 +1,13 @@
+// 🎓 This is the FULL opportunities page at /opportunities
+// It handles search, filtering and displaying ALL opportunities
+// It uses the shared OpportunityCard component instead of defining its own!
 import { useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import OpportunityCard from '../components/OpportunityCard'
 import type { Opportunity, Category } from '../types'
 
+// 🎓 All our opportunities data lives here
+// When we connect Firebase later, this will come from the database instead!
 const opportunities: Opportunity[] = [
   {
     id: 1,
@@ -97,6 +102,8 @@ const opportunities: Opportunity[] = [
   },
 ]
 
+// 🎓 Category filter options
+// Category type from types/index.ts ensures only valid categories are used
 const categories: Category[] = [
   'All',
   'Animal Welfare',
@@ -106,14 +113,7 @@ const categories: Category[] = [
   'Community',
 ]
 
-const categoryColors: Record<string, string> = {
-  'Animal Welfare': 'bg-orange-100 text-orange-700',
-  'Healthcare':     'bg-blue-100 text-blue-700',
-  'Education':      'bg-purple-100 text-purple-700',
-  'Environment':    'bg-green-100 text-green-700',
-  'Community':      'bg-pink-100 text-pink-700',
-}
-
+// 🎓 Emoji icons for each category filter button
 const categoryIcons: Record<string, string> = {
   'All':            '🌍',
   'Animal Welfare': '🐾',
@@ -123,150 +123,35 @@ const categoryIcons: Record<string, string> = {
   'Community':      '🤝',
 }
 
-interface OpportunityCardProps {
-  opportunity: Opportunity
-}
-
-function OpportunityCard({ opportunity }: OpportunityCardProps) {
-  const spotsLeft: number = opportunity.totalSlots - opportunity.registeredCount
-  const percentFilled: number = Math.round(
-    (opportunity.registeredCount / opportunity.totalSlots) * 100
-  )
-  const spotsColor: string =
-    spotsLeft <= 10 ? 'text-red-500' :
-    spotsLeft <= 20 ? 'text-orange-500' :
-    'text-[#38bdf8]'
-
-  return (
-    <div className="
-      bg-white rounded-2xl overflow-hidden shadow-md
-      hover:shadow-2xl transition-all duration-300
-      hover:-translate-y-2 flex flex-col
-      border border-gray-100
-    ">
-
-      {/* CARD IMAGE */}
-      <div className="relative overflow-hidden h-52">
-        <img
-          src={opportunity.image}
-          alt={opportunity.title}
-          className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-        />
-        <span className={`
-          absolute top-3 left-3
-          text-xs font-semibold px-3 py-1 rounded-full
-          ${categoryColors[opportunity.category]}
-        `}>
-          {opportunity.category}
-        </span>
-        <span className={`
-          absolute top-3 right-3
-          text-xs font-bold px-3 py-1 rounded-full
-          ${spotsLeft <= 10
-            ? 'bg-red-100 text-red-600'
-            : 'bg-white text-gray-700'
-          }
-        `}>
-          {spotsLeft} spots left
-        </span>
-      </div>
-
-      {/* CARD CONTENT */}
-      <div className="p-5 flex flex-col flex-1">
-
-        {/* Title */}
-        <h3 className="text-lg font-bold text-gray-800 mb-1">
-          {opportunity.title}
-        </h3>
-
-        {/* Organization */}
-        <p className="text-[#38bdf8] text-sm font-medium mb-3">
-          {opportunity.organization}
-        </p>
-
-        {/* Description with inline Learn More */}
-        <p className="text-gray-500 text-sm leading-relaxed mb-4">
-          {opportunity.description.slice(0, 100)}...{' '}
-          <Link
-            to={`/opportunities/${opportunity.id}`}
-            className="text-[#38bdf8] font-semibold hover:underline"
-          >
-            Learn More
-          </Link>
-        </p>
-
-        {/* Progress bar */}
-        <div className="mb-4">
-          <div className="flex justify-between text-xs text-gray-400 mb-1">
-            <span>{opportunity.registeredCount} registered</span>
-            <span>{opportunity.totalSlots} total slots</span>
-          </div>
-          <div className="w-full bg-gray-100 rounded-full h-1.5">
-            <div
-              className={`
-                h-1.5 rounded-full transition-all duration-500
-                ${percentFilled >= 90
-                  ? 'bg-red-400'
-                  : percentFilled >= 70
-                  ? 'bg-orange-400'
-                  : 'bg-[#38bdf8]'
-                }
-              `}
-              style={{ width: `${percentFilled}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Info row */}
-        <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-4">
-          <span>📍 {opportunity.location}</span>
-          <span>⏰ {opportunity.timing}</span>
-        </div>
-
-        {/* Activities */}
-        <div className="flex flex-wrap gap-1 mb-4">
-          {opportunity.activities.slice(0, 3).map((activity, i) => (
-            <span
-              key={i}
-              className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
-            >
-              {activity}
-            </span>
-          ))}
-        </div>
-
-        {/* Sign Up to Volunteer button */}
-        <div className="mt-auto pt-3 border-t border-gray-100">
-          <Link
-            to={`/opportunities/${opportunity.id}`}
-            className="
-              w-full flex items-center justify-center
-              bg-[#38bdf8] hover:bg-[#0ea5e9]
-              text-white py-2.5 rounded-xl
-              text-sm font-semibold transition duration-200
-            "
-          >
-            Sign Up to Volunteer →
-          </Link>
-        </div>
-
-      </div>
-    </div>
-  )
-}
-
 function Opportunities() {
+  // 🎓 Tracks which category filter is active
+  // Starts as 'All' so all opportunities show by default
   const [activeCategory, setActiveCategory] = useState<Category>('All')
+
+  // 🎓 Tracks what user types in search box
   const [searchQuery, setSearchQuery] = useState<string>('')
 
+  // 🎓 useMemo is a performance optimization hook
+  // It only recalculates filteredOpportunities when
+  // activeCategory OR searchQuery changes
+  // Without useMemo it would recalculate on EVERY render (wasteful!)
   const filteredOpportunities = useMemo((): Opportunity[] => {
     return opportunities.filter((opp) => {
+      // 🎓 Check if category matches
+      // If activeCategory is 'All' show everything
+      // Otherwise only show opportunities matching the selected category
       const matchesCategory =
         activeCategory === 'All' || opp.category === activeCategory
+
+      // 🎓 Check if search query matches title, organization or location
+      // toLowerCase() makes search case-insensitive
+      // includes() checks if the string contains the search query
       const matchesSearch =
         opp.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         opp.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
         opp.location.toLowerCase().includes(searchQuery.toLowerCase())
+
+      // 🎓 Both must be true for opportunity to show
       return matchesCategory && matchesSearch
     })
   }, [activeCategory, searchQuery])
@@ -276,7 +161,7 @@ function Opportunities() {
 
       <Navbar />
 
-      {/* PAGE HEADER */}
+      {/* PAGE HEADER - dark navy like home page hero */}
       <div className="
         bg-gradient-to-br from-[#0f2942] via-[#1a3a5c] to-[#0d3158]
         px-8 py-16 text-center
@@ -284,11 +169,14 @@ function Opportunities() {
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
           Explore Volunteer Opportunities
         </h1>
+
+        {/* 🎓 Dynamic count - updates as filters change
+            Ternary adds 'gig' or 'gigs' based on count */}
         <p className="text-blue-200 mb-8">
           {filteredOpportunities.length} gig{filteredOpportunities.length !== 1 ? 's' : ''} available across Kenya
         </p>
 
-        {/* Search bar */}
+        {/* SEARCH BAR */}
         <div className="flex items-center bg-white rounded-xl px-4 py-3 max-w-2xl mx-auto shadow-lg">
           <span className="text-gray-400 mr-3 text-lg">🔍</span>
           <input
@@ -298,6 +186,7 @@ function Opportunities() {
             placeholder="Search by name, organization or location..."
             className="flex-1 bg-transparent outline-none text-sm text-gray-700"
           />
+          {/* 🎓 Only shows ✕ button when there is text to clear */}
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
@@ -312,6 +201,9 @@ function Opportunities() {
       {/* CATEGORY FILTERS */}
       <div className="bg-white border-b border-gray-200 px-8 py-4">
         <div className="flex gap-2 overflow-x-auto max-w-6xl mx-auto">
+          {/* 🎓 .map() creates a button for each category
+              active category gets blue background
+              inactive categories get gray background */}
           {categories.map((category) => (
             <button
               key={category}
@@ -335,6 +227,10 @@ function Opportunities() {
 
       {/* OPPORTUNITIES GRID */}
       <div className="px-8 py-10 max-w-7xl mx-auto">
+
+        {/* 🎓 Conditional rendering
+            If no results show empty state message
+            Otherwise show the grid of cards */}
         {filteredOpportunities.length === 0 ? (
           <div className="text-center py-24">
             <p className="text-6xl mb-4">🔍</p>
@@ -344,6 +240,7 @@ function Opportunities() {
             <p className="text-gray-400 text-sm mb-6">
               Try a different search term or category
             </p>
+            {/* 🎓 Clears both search and category filter */}
             <button
               onClick={() => {
                 setSearchQuery('')
@@ -356,16 +253,28 @@ function Opportunities() {
           </div>
         ) : (
           <>
+            {/* 🎓 Results summary text
+                Shows different text based on active filters */}
             <p className="text-gray-500 text-sm mb-6">
               Showing {filteredOpportunities.length} opportunities
               {activeCategory !== 'All' && ` in ${activeCategory}`}
               {searchQuery && ` for "${searchQuery}"`}
             </p>
+
+            {/* 🎓 Responsive grid
+                grid-cols-1 = 1 column on mobile
+                md:grid-cols-2 = 2 columns on tablet
+                lg:grid-cols-3 = 3 columns on desktop
+                gap-6 = space between cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredOpportunities.map((opportunity) => (
+                // 🎓 We use the SHARED OpportunityCard component!
+                // linkTo passes the detail page URL for each opportunity
+                // opportunity.id = 1, 2, 3 etc makes URL /opportunities/1
                 <OpportunityCard
                   key={opportunity.id}
                   opportunity={opportunity}
+                  linkTo={`/opportunities/${opportunity.id}`}
                 />
               ))}
             </div>
