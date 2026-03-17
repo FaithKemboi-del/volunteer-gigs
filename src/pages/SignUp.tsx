@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+
 // 🎓 TYPESCRIPT INTERFACE
 // Notice SignUpForm has MORE fields than SignInForm
 // because we need extra info when creating an account
@@ -297,12 +298,7 @@ function SignUp() {
               >
                 <span>G</span> Google
               </button>
-              <button
-                type="button"
-                className="flex items-center justify-center gap-2 border-2 border-gray-200 rounded-xl py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition duration-200"
-              >
-                <span>⌥</span> GitHub
-              </button>
+             
             </div>
 
           </form>
@@ -317,6 +313,7 @@ function SignUp() {
 
         </div>
       </div>
+      
     </div>
   )
 }

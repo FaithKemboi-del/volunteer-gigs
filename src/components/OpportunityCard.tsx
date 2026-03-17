@@ -165,7 +165,8 @@ function OpportunityCard({ opportunity, linkTo = '/opportunities' }: Opportunity
             So all cards have button at same position regardless of content height */}
         <div className="mt-auto pt-3 border-t border-gray-100">
           <Link
-            to={linkTo}
+            
+            to={`/book/${opportunity.id}`}
             className="
               w-full flex items-center justify-center
               bg-[#38bdf8] hover:bg-[#0ea5e9]

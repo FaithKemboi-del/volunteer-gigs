@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+
 // 🎓 TYPESCRIPT INTERFACE
 // This describes exactly what our form data looks like
 // Every field must be a string - TypeScript will warn us if we try to put a number!
@@ -275,12 +276,7 @@ function SignIn() {
               >
                 <span>G</span> Google
               </button>
-              <button
-                type="button"
-                className="flex items-center justify-center gap-2 border-2 border-gray-200 rounded-xl py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition duration-200"
-              >
-                <span>⌥</span> GitHub
-              </button>
+              
             </div>
 
           </form>
@@ -295,6 +291,7 @@ function SignIn() {
 
         </div>
       </div>
+      
     </div>
   )
 }

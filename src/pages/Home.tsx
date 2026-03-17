@@ -7,6 +7,7 @@ import StatsSection from '../components/StatsSection'
 import FeaturedOpportunities from '../components/FeaturedOpportunities'
 import CallToAction from '../components/CallToAction'
 import RecommendForm from '../components/RecommendForm'
+import Footer from '../components/Footer'
 
 function Home() {
   return (
@@ -22,6 +23,7 @@ function Home() {
       <FeaturedOpportunities />
       <CallToAction />
       <RecommendForm />
+      <Footer />
 
     </div>
   )

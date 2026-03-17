@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react'
 import Navbar from '../components/Navbar'
 import OpportunityCard from '../components/OpportunityCard'
 import type { Opportunity, Category } from '../types'
+import Footer from '../components/Footer'
 
 // 🎓 All our opportunities data lives here
 // When we connect Firebase later, this will come from the database instead!
@@ -16,6 +17,7 @@ const opportunities: Opportunity[] = [
     category: 'Animal Welfare',
     location: 'Karen, Nairobi',
     description: 'Visit and care for rescued animals at KSPCA. Help with feeding, grooming, walking dogs, and socializing animals to prepare them for adoption.',
+    fullDescription: 'Visit and care for rescued animals at KSPCA. Help with feeding, grooming, walking dogs, and socializing animals to prepare them for adoption. This is a wonderful opportunity to make a direct difference in the lives of animals while working alongside a passionate team of animal lovers. No prior experience needed — just a big heart!',
     activities: ['Feeding animals', 'Dog walking', 'Grooming', 'Socialization'],
     timing: 'Sat 9am–1pm',
     totalSlots: 204,
@@ -29,6 +31,7 @@ const opportunities: Opportunity[] = [
     category: 'Healthcare',
     location: 'Nairobi, Kenya',
     description: 'Provide companionship and emotional support to patients receiving palliative care. Read, chat, or simply be present for patients and families.',
+    fullDescription: 'Provide companionship and emotional support to patients receiving palliative care. Read, chat, or simply be present for patients and families. Your presence alone can bring enormous comfort to those going through difficult times. Volunteers are trained and supported by the hospice team throughout their service.',
     activities: ['Companionship', 'Reading to patients', 'Emotional support', 'Family assistance'],
     timing: 'Wed & Fri 10am–1pm',
     totalSlots: 144,
@@ -42,6 +45,7 @@ const opportunities: Opportunity[] = [
     category: 'Healthcare',
     location: 'Nyeri, Kenya',
     description: 'Support elderly and terminally ill patients at Nyeri Hospice. Assist with daily activities, provide companionship, and help with light duties.',
+    fullDescription: 'Support elderly and terminally ill patients at Nyeri Hospice. Assist with daily activities, provide companionship, and help with light duties. You will be making a profound difference in the final chapter of someone\'s life by bringing warmth, dignity and human connection to those who need it most.',
     activities: ['Patient care', 'Daily activities', 'Companionship', 'Light duties'],
     timing: 'Tue & Thu 9am–12pm',
     totalSlots: 107,
@@ -55,6 +59,7 @@ const opportunities: Opportunity[] = [
     category: 'Education',
     location: 'Kibera, Nairobi',
     description: 'Teach and mentor underprivileged children in Kibera. Help with literacy, numeracy, and life skills to build a brighter future.',
+    fullDescription: 'Teach and mentor underprivileged children in Kibera. Help with literacy, numeracy, and life skills to build a brighter future. Education is the most powerful tool for breaking the cycle of poverty and your contribution, however small, plants seeds that grow for a lifetime. All teaching materials are provided.',
     activities: ['Teaching literacy', 'Numeracy support', 'Mentorship', 'Life skills'],
     timing: 'Mon, Wed & Fri 8am–12pm',
     totalSlots: 50,
@@ -68,6 +73,7 @@ const opportunities: Opportunity[] = [
     category: 'Environment',
     location: 'Karura, Nairobi',
     description: 'Join us in keeping Karura Forest clean and green. Help with litter collection, tree planting, and trail maintenance.',
+    fullDescription: 'Join us in keeping Karura Forest clean and green. Help with litter collection, tree planting, and trail maintenance. Karura Forest is one of Nairobi\'s most precious urban ecosystems and your hands-on contribution helps preserve it for generations to come. Come prepared with good walking shoes and a love for nature!',
     activities: ['Litter collection', 'Tree planting', 'Trail maintenance', 'Environmental education'],
     timing: 'Every Saturday 7am–11am',
     totalSlots: 80,
@@ -81,6 +87,7 @@ const opportunities: Opportunity[] = [
     category: 'Community',
     location: 'Maziwa, Nairobi',
     description: 'Help prepare and serve meals to vulnerable community members. Work alongside a warm team making a direct difference every week.',
+    fullDescription: 'Help prepare and serve meals to vulnerable community members. Work alongside a warm team making a direct difference every week. Food is more than nutrition — it is dignity and community. By volunteering here you become part of a family that ensures no one in the neighbourhood goes to bed hungry.',
     activities: ['Meal preparation', 'Food serving', 'Kitchen cleanup', 'Community outreach'],
     timing: 'Sun 10am–2pm',
     totalSlots: 30,
@@ -94,6 +101,7 @@ const opportunities: Opportunity[] = [
     category: 'Community',
     location: 'Kilimani, Nairobi',
     description: 'Support children and families at Newlife Home Trust. Help with childcare, tutoring, and recreational activities for children in need.',
+    fullDescription: 'Support children and families at Newlife Home Trust. Help with childcare, tutoring, and recreational activities for children in need. Every child deserves love, stability and the chance to learn. Your time here creates memories and moments of joy that stay with these children long after your visit.',
     activities: ['Childcare', 'Tutoring', 'Recreational activities', 'Family support'],
     timing: 'Sat & Sun 9am–1pm',
     totalSlots: 40,
@@ -281,6 +289,7 @@ function Opportunities() {
           </>
         )}
       </div>
+      <Footer />
 
     </div>
   )

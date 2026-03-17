@@ -10,7 +10,7 @@ import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import Opportunities from './pages/Opportunities'
 import Recommend from './pages/Recommend'
-
+import Book from './pages/Book'
 // App is our MAIN component — the root of everything
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/opportunities" element={<Opportunities />} />
         <Route path="/recommend" element={<Recommend />} />
+        <Route path="/book/:id" element={<Book />} />
       </Routes>
     </BrowserRouter>
   )

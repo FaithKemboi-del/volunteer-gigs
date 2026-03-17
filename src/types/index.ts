@@ -1,8 +1,3 @@
-// 🎓 This file holds ALL our TypeScript types
-// Any page can import from here instead of redefining types everywhere!
-
-// 🎓 UNION TYPE - Category can ONLY be one of these exact strings
-// TypeScript will error if you try to use any other string!
 export type Category =
   | 'All'
   | 'Animal Welfare'
@@ -11,7 +6,6 @@ export type Category =
   | 'Environment'
   | 'Community'
 
-// 🎓 INTERFACE - describes exactly what one opportunity looks like
 export interface Opportunity {
   id: number
   title: string
@@ -19,6 +13,10 @@ export interface Opportunity {
   category: Category
   location: string
   description: string
+  // 🎓 fullDescription is optional with ?
+  // Not every opportunity needs it
+  // If not provided we just show description
+  fullDescription?: string
   activities: string[]
   timing: string
   totalSlots: number
