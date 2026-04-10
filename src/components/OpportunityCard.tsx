@@ -15,7 +15,7 @@ interface OpportunityCardProps {
   linkTo?: string
 }
 
-function OpportunityCard({ opportunity, linkTo = '/opportunities' }: OpportunityCardProps) {
+function OpportunityCard({ opportunity }: OpportunityCardProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
   const displayDescription: string = isExpanded && opportunity.fullDescription
