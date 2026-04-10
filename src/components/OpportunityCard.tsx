@@ -40,9 +40,9 @@ function OpportunityCard({ opportunity, linkTo = '/opportunities' }: Opportunity
   // Else if spotsLeft <= 20 → orange
   // Else → blue
   const spotsColor: string =
-    spotsLeft <= 10 ? 'text-red-500' :
+    void(spotsLeft <= 10 ? 'text-red-500' :
     spotsLeft <= 20 ? 'text-orange-500' :
-    'text-[#38bdf8]'
+    'text-[#38bdf8]')
 
   return (
     // 🎓 hover:-translate-y-2 = card moves up 2px on hover (lift effect)
