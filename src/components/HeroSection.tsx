@@ -4,29 +4,17 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-// 🎓 PopularTag interface lives here because only HeroSection uses it
-interface PopularTag {
-  id: number
-  name: string
-}
+
+
 
 // 🎓 Defined OUTSIDE component so it's not recreated on every render
-const popularTags: PopularTag[] = [
-  { id: 1, name: 'KSPCA Visit' },
-  { id: 2, name: 'Hospice Nairobi' },
-  { id: 3, name: 'Hospice Nyeri' },
-  { id: 4, name: 'Newlife Home Trust Kilimani' },
-  { id: 5, name: 'Restoration of Victory' },
-  { id: 6, name: 'Jacaranda' },
-  { id: 7, name: 'Maziwa Methodist Church' },
-]
+
 
 function HeroSection() {
   // 🎓 Tracks what user types in search box
   const [searchQuery, setSearchQuery] = useState<string>('')
 
-  // 🎓 Tracks which popular tag is clicked/active
-  const [activeTag, setActiveTag] = useState<number | null>(null)
+  
 
   // 🎓 Controls fade-in animation when page loads
   // Starts false (invisible) then becomes true (visible)
@@ -72,15 +60,7 @@ function HeroSection() {
           When heroVisible=false: opacity-0 (invisible) and -translate-y-4 (moved up)
           When heroVisible=true: opacity-100 (visible) and translate-y-0 (normal position)
           transition-all duration-700 = smooth animation over 700ms */}
-      <span className={`
-        bg-blue-500 bg-opacity-20 text-blue-200
-        text-xs font-semibold px-4 py-1.5 rounded-full mb-8
-        border border-blue-400 border-opacity-30
-        transition-all duration-700
-        ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}
-      `}>
-        ✨ Make a difference today
-      </span>
+     
 
       {/* 🎓 Main heading - white part
           delay-100 = waits 100ms before starting animation
@@ -156,39 +136,7 @@ function HeroSection() {
       {/* 🎓 Popular tags section
           flex-wrap = tags wrap to next line if they don't fit
           delay-700 = last thing to animate in */}
-      <div className={`
-        flex flex-wrap justify-center gap-2 w-full max-w-5xl
-        transition-all duration-700 delay-700
-        ${heroVisible ? 'opacity-100' : 'opacity-0'}
-      `}>
-        <span className="text-blue-300 text-sm mt-1 mr-2">Popular:</span>
-
-        {/* 🎓 .map() loops through popularTags array
-            For EACH tag it creates a button
-            tag = the current tag object { id, name }
-            key={tag.id} = required by React to track each item in a list */}
-        {popularTags.map((tag) => (
-          <button
-            key={tag.id}
-            // 🎓 onClick toggles active tag
-            // If clicking active tag → set to null (deselect)
-            // If clicking new tag → set to that tag's id
-            onClick={() => setActiveTag(tag.id === activeTag ? null : tag.id)}
-            className={`
-              text-sm px-4 py-1.5 rounded-full transition-all duration-200
-              ${activeTag === tag.id
-                // 🎓 Active tag gets solid blue background
-                ? 'bg-[#38bdf8] text-white border border-[#38bdf8]'
-                // 🎓 Inactive tags get transparent border
-                : 'border border-blue-400 border-opacity-40 text-blue-200 hover:bg-blue-500 hover:bg-opacity-20'
-              }
-            `}
-          >
-            {/* 🎓 {tag.name} renders the tag's name text */}
-            {tag.name}
-          </button>
-        ))}
-      </div>
+      
     </section>
   )
 }

@@ -1,7 +1,8 @@
 // 🎓 This is the FULL opportunities page at /opportunities
 // It handles search, filtering and displaying ALL opportunities
 // It uses the shared OpportunityCard component instead of defining its own!
-
+import kspca from '../assets/kspca.png'
+import nhospice from '../assets/nhospice.png'
 import Navbar from '../components/Navbar'
 import OpportunityCard from '../components/OpportunityCard'
 import type { Opportunity, Category } from '../types'
@@ -24,7 +25,7 @@ const opportunities: Opportunity[] = [
     timing: 'Sat 9am–1pm',
     totalSlots: 20,
     registeredCount: 18,
-    image: 'https://placehold.co/600x400/1a3a5c/white?text=KSPCA+Visit',
+    image: kspca,
   },
   {
     id: 2,
@@ -38,7 +39,7 @@ const opportunities: Opportunity[] = [
     timing: 'Wed & Fri 10am–1pm',
     totalSlots: 20,
     registeredCount: 10,
-    image: 'https://placehold.co/600x400/1a3a5c/white?text=Hospice+Nairobi',
+    image:nhospice,
   },
   {
     id: 3,

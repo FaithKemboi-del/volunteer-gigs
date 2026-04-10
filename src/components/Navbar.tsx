@@ -1,3 +1,4 @@
+import logo from '../assets/logo.png'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -25,13 +26,13 @@ function Navbar() {
       <div className="flex items-center justify-between max-w-7xl mx-auto">
 
         {/* LOGO */}
-        <Link to="/" className="text-[#0f2942] font-bold text-xl flex items-center gap-2">
-        <img
-            
-            
-            className="h-8 w-auto"   />
-          Volunteer Gigs
-        </Link>
+        <Link to="/" className="flex items-center gap-2">
+  <img
+    src={logo}
+    alt="Volunteer Gigs Logo"
+    className="h-12 w-auto object-contain"
+  />
+</Link>
 
         {/* DESKTOP MIDDLE LINKS */}
         <div className="hidden md:flex gap-8 items-center">

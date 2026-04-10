@@ -1,5 +1,7 @@
 // 🎓 This component shows 3 featured opportunities on the home page
 // It imports OpportunityCard so we don't duplicate card code!
+import kspca from '../assets/kspca.png'
+import nhospice from '../assets/nhospice.png'
 import { Link } from 'react-router-dom'
 import OpportunityCard from './OpportunityCard'
 import type { Opportunity } from '../types'
@@ -19,7 +21,7 @@ const featuredOpportunities: Opportunity[] = [
     timing: 'Sat 9am–1pm',
     totalSlots: 15,
     registeredCount: 13,
-    image: 'https://placehold.co/600x400/1a3a5c/white?text=KSPCA+Visit',
+    image: kspca,
   },
   {
     id: 2,
@@ -33,7 +35,7 @@ const featuredOpportunities: Opportunity[] = [
     timing: 'Wed & Fri 10am–1pm',
     totalSlots: 15,
     registeredCount: 9,
-    image: 'https://placehold.co/600x400/1a3a5c/white?text=Hospice+Nairobi',
+    image: nhospice,
   },
   {
     id: 3,

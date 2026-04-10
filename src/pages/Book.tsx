@@ -1,3 +1,5 @@
+import kspca from '../assets/kspca.png'
+import nhospice from '../assets/nhospice.png'
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
@@ -18,7 +20,7 @@ const opportunities = [
     timing: 'Sat 9am–1pm',
     totalSlots: 204,
     registeredCount: 189,
-    image: 'https://placehold.co/600x400/1a3a5c/white?text=KSPCA+Visit',
+    image: kspca,
   },
   {
     id: 2,
@@ -31,7 +33,7 @@ const opportunities = [
     timing: 'Wed & Fri 10am–1pm',
     totalSlots: 144,
     registeredCount: 134,
-    image: 'https://placehold.co/600x400/1a3a5c/white?text=Hospice+Nairobi',
+    image:nhospice,
   },
   {
     id: 3,
