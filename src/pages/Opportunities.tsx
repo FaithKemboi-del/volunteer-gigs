@@ -1,11 +1,13 @@
 // 🎓 This is the FULL opportunities page at /opportunities
 // It handles search, filtering and displaying ALL opportunities
 // It uses the shared OpportunityCard component instead of defining its own!
-import { useState, useMemo } from 'react'
+
 import Navbar from '../components/Navbar'
 import OpportunityCard from '../components/OpportunityCard'
 import type { Opportunity, Category } from '../types'
 import Footer from '../components/Footer'
+import { useSearchParams } from 'react-router-dom'
+import { useState, useMemo, useEffect } from 'react'
 
 // 🎓 All our opportunities data lives here
 // When we connect Firebase later, this will come from the database instead!
@@ -20,8 +22,8 @@ const opportunities: Opportunity[] = [
     fullDescription: 'Visit and care for rescued animals at KSPCA. Help with feeding, grooming, walking dogs, and socializing animals to prepare them for adoption. This is a wonderful opportunity to make a direct difference in the lives of animals while working alongside a passionate team of animal lovers. No prior experience needed — just a big heart!',
     activities: ['Feeding animals', 'Dog walking', 'Grooming', 'Socialization'],
     timing: 'Sat 9am–1pm',
-    totalSlots: 204,
-    registeredCount: 189,
+    totalSlots: 20,
+    registeredCount: 18,
     image: 'https://placehold.co/600x400/1a3a5c/white?text=KSPCA+Visit',
   },
   {
@@ -34,8 +36,8 @@ const opportunities: Opportunity[] = [
     fullDescription: 'Provide companionship and emotional support to patients receiving palliative care. Read, chat, or simply be present for patients and families. Your presence alone can bring enormous comfort to those going through difficult times. Volunteers are trained and supported by the hospice team throughout their service.',
     activities: ['Companionship', 'Reading to patients', 'Emotional support', 'Family assistance'],
     timing: 'Wed & Fri 10am–1pm',
-    totalSlots: 144,
-    registeredCount: 134,
+    totalSlots: 20,
+    registeredCount: 10,
     image: 'https://placehold.co/600x400/1a3a5c/white?text=Hospice+Nairobi',
   },
   {
@@ -48,8 +50,8 @@ const opportunities: Opportunity[] = [
     fullDescription: 'Support elderly and terminally ill patients at Nyeri Hospice. Assist with daily activities, provide companionship, and help with light duties. You will be making a profound difference in the final chapter of someone\'s life by bringing warmth, dignity and human connection to those who need it most.',
     activities: ['Patient care', 'Daily activities', 'Companionship', 'Light duties'],
     timing: 'Tue & Thu 9am–12pm',
-    totalSlots: 107,
-    registeredCount: 87,
+    totalSlots: 10,
+    registeredCount: 8,
     image: 'https://placehold.co/600x400/1a3a5c/white?text=Hospice+Nyeri',
   },
   {
@@ -62,8 +64,8 @@ const opportunities: Opportunity[] = [
     fullDescription: 'Teach and mentor underprivileged children in Kibera. Help with literacy, numeracy, and life skills to build a brighter future. Education is the most powerful tool for breaking the cycle of poverty and your contribution, however small, plants seeds that grow for a lifetime. All teaching materials are provided.',
     activities: ['Teaching literacy', 'Numeracy support', 'Mentorship', 'Life skills'],
     timing: 'Mon, Wed & Fri 8am–12pm',
-    totalSlots: 50,
-    registeredCount: 32,
+    totalSlots: 20,
+    registeredCount: 15,
     image: 'https://placehold.co/600x400/1a3a5c/white?text=Teach+%26+Inspire',
   },
   {
@@ -76,8 +78,8 @@ const opportunities: Opportunity[] = [
     fullDescription: 'Join us in keeping Karura Forest clean and green. Help with litter collection, tree planting, and trail maintenance. Karura Forest is one of Nairobi\'s most precious urban ecosystems and your hands-on contribution helps preserve it for generations to come. Come prepared with good walking shoes and a love for nature!',
     activities: ['Litter collection', 'Tree planting', 'Trail maintenance', 'Environmental education'],
     timing: 'Every Saturday 7am–11am',
-    totalSlots: 80,
-    registeredCount: 45,
+    totalSlots: 15,
+    registeredCount: 5,
     image: 'https://placehold.co/600x400/1a3a5c/white?text=Karura+Cleanup',
   },
   {
@@ -91,7 +93,7 @@ const opportunities: Opportunity[] = [
     activities: ['Meal preparation', 'Food serving', 'Kitchen cleanup', 'Community outreach'],
     timing: 'Sun 10am–2pm',
     totalSlots: 30,
-    registeredCount: 18,
+    registeredCount: 20,
     image: 'https://placehold.co/600x400/1a3a5c/white?text=Maziwa+Kitchen',
   },
   {
@@ -104,8 +106,8 @@ const opportunities: Opportunity[] = [
     fullDescription: 'Support children and families at Newlife Home Trust. Help with childcare, tutoring, and recreational activities for children in need. Every child deserves love, stability and the chance to learn. Your time here creates memories and moments of joy that stay with these children long after your visit.',
     activities: ['Childcare', 'Tutoring', 'Recreational activities', 'Family support'],
     timing: 'Sat & Sun 9am–1pm',
-    totalSlots: 40,
-    registeredCount: 28,
+    totalSlots: 35,
+    registeredCount: 20,
     image: 'https://placehold.co/600x400/1a3a5c/white?text=Newlife+Home',
   },
 ]
@@ -134,7 +136,20 @@ const categoryIcons: Record<string, string> = {
 function Opportunities() {
   // 🎓 Tracks which category filter is active
   // Starts as 'All' so all opportunities show by default
-  const [activeCategory, setActiveCategory] = useState<Category>('All')
+  
+ 
+const [searchParams] = useSearchParams()
+const [activeCategory, setActiveCategory] = useState<Category>(
+  (searchParams.get('category') as Category) || 'All'
+)
+
+// 🎓 This watches for URL changes and updates the active category
+// Without this, clicking a different category from the navbar
+// while already on the opportunities page won't update the filter
+useEffect(() => {
+  const categoryFromUrl = searchParams.get('category') as Category
+  setActiveCategory(categoryFromUrl || 'All')
+}, [searchParams])
 
   // 🎓 Tracks what user types in search box
   const [searchQuery, setSearchQuery] = useState<string>('')

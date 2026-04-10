@@ -1,6 +1,7 @@
 // 🎓 This component handles the entire recommend a place form
 // All the form logic lives HERE, not in Home.tsx!
 import { useState } from 'react'
+import { createRecommendation } from '../api'
 
 // 🎓 Describes the shape of our form data
 interface RecommendForm {
@@ -101,21 +102,26 @@ function RecommendForm() {
   // React.FormEvent = TypeScript type for form submit events
   // Promise<void> = this function returns a Promise that resolves to nothing
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    // 🎓 Prevents page from reloading on form submit (default browser behaviour)
     e.preventDefault()
-
-    // 🎓 Stop here if validation fails
     if (!validate()) return
-
     setIsLoading(true)
 
-    // 🎓 Simulates API call with 1.5 second delay
-    // We'll replace this with real Firebase code later!
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    setIsLoading(false)
-    setIsSubmitted(true)
-  }
+    try {
+      await createRecommendation({
+        organization_name: formData.organizationName,
+        location: formData.location,
+        website: formData.website,
+        category: formData.category,
+        description: formData.description,
+      })
+      setIsSubmitted(true)
+    } catch (error) {
+      alert('Something went wrong. Please try again!')
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+    }
+  } 
 
   // 🎓 CONDITIONAL RENDERING at component level
   // If form was submitted successfully show thank you screen

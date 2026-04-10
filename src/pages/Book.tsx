@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { createBooking } from '../api'
 
 // 🎓 Hardcoded opportunities - same ids as the cards
 // When Firebase is connected this will be fetched from the database
@@ -192,9 +193,27 @@ function Book() {
     e.preventDefault()
     if (!validate()) return
     setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsLoading(false)
-    setShowPopup(true)
+
+    try {
+      await createBooking({
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        location: formData.location,
+        date: formData.date,
+        opportunity_id: opportunity.id,
+        opportunity_title: opportunity.title,
+        opportunity_organization: opportunity.organization,
+        connect_with_others: formData.connectWithOthers,
+        receive_reminder: formData.receiveReminder,
+      })
+      setShowPopup(true)
+    } catch (error) {
+      alert('Something went wrong. Please try again!')
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (

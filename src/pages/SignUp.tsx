@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { signUp } from '../api'
 
 
 // 🎓 TYPESCRIPT INTERFACE
@@ -28,7 +29,8 @@ function SignUp() {
   const [errors, setErrors] = useState<FormErrors>({})
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
+  const [isSuccess, setIsSuccess] = useState<boolean>(false)
+  
   // 🎓 Same handleChange pattern as SignIn
   // One function handles ALL input fields!
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -63,17 +65,57 @@ function SignUp() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+ const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     if (!validate()) return
     setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsLoading(false)
-    alert('Account created successfully! Firebase coming soon 🔥')
+
+    try {
+      await signUp({
+        full_name: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      })
+      setIsSuccess(true)
+    } catch (error: any) {
+      alert(error.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <div className="min-h-screen flex">
+      {/* SUCCESS POPUP */}
+      {isSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black bg-opacity-50" />
+          <div className="relative z-10 bg-white rounded-3xl p-10 max-w-md w-full text-center shadow-2xl">
+            <div className="text-6xl mb-4">🎉</div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">
+              Welcome to Volunteer Gigs!
+            </h2>
+            <p className="text-gray-500 leading-relaxed mb-6">
+              Your account has been created successfully.
+              Let's find you a volunteer opportunity!
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/signin"
+                className="bg-[#38bdf8] hover:bg-[#0ea5e9] text-white px-8 py-3 rounded-xl font-semibold text-sm transition duration-200"
+              >
+                Sign In Now →
+              </Link>
+              <Link
+                to="/opportunities"
+                className="border-2 border-gray-200 text-gray-600 px-8 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 transition duration-200"
+              >
+                Browse Opportunities
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ===== LEFT PANEL ===== */}
       {/* Same style as Sign In for consistency */}

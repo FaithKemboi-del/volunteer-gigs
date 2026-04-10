@@ -13,10 +13,10 @@ interface StatItem {
 // 🎓 Our stats data
 // Defined outside component so it's not recreated on every render
 const stats: StatItem[] = [
-  { icon: '👥', value: 12400, suffix: '+', label: 'Volunteers' },
-  { icon: '📍', value: 850, suffix: '+', label: 'Locations' },
-  { icon: '❤️', value: 3200, suffix: '+', label: 'Gigs Completed' },
-  { icon: '📅', value: 500, suffix: '+', label: 'Active Gigs' },
+  { icon: '👥', value: 1000, suffix: '+', label: 'Volunteers' },
+  { icon: '📍', value: 10, suffix: '+', label: 'Locations' },
+  { icon: '❤️', value: 50, suffix: '+', label: 'Gigs Completed' },
+  { icon: '📅', value: 10, suffix: '+', label: 'Active Gigs' },
 ]
 
 // 🎓 CUSTOM HOOK - useCountUp

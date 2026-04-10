@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { signIn } from '../api'
 
 
 // 🎓 TYPESCRIPT INTERFACE
@@ -74,19 +75,28 @@ function SignIn() {
 
   // 🎓 Handles form submission
   // React.FormEvent is the TypeScript type for form submit events
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault() // stops page from reloading on submit
-
-    if (!validate()) return // stop if validation fails
-
+ const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault()
+    if (!validate()) return
     setIsLoading(true)
 
-    // 🎓 We simulate an API call with a delay
-    // Later we will replace this with real Firebase auth!
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    setIsLoading(false)
-    alert('Signed in successfully! Firebase coming soon 🔥')
+    try {
+      const response = await signIn({
+        email: formData.email,
+        password: formData.password,
+      })
+      // 🎓 Save the token to localStorage so we can use it later
+      // for protected routes
+      localStorage.setItem('token', response.access_token)
+      localStorage.setItem('userEmail', formData.email)
+      // 🎓 Redirect to home page after successful signin
+      window.location.href = '/'
+    } catch (error: any) {
+      // 🎓 Show the error from FastAPI e.g. "Invalid email or password"
+      alert(error.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
