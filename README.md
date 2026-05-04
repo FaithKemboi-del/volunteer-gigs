@@ -1,73 +1,48 @@
-# React + TypeScript + Vite
+ Volunteer Connect
+Overview
+Volunteer Connect is a platform that connects individuals seeking volunteer opportunities with organizations offering them. It also allows organizations to easily post and manage volunteer opportunities in one place.
+The goal is to solve the problem of fragmented communication channels—especially WhatsApp groups—where opportunities are easily lost in chat noise and become difficult to track or access.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ Problem Statement
+Currently, volunteer opportunities in many communities are shared through WhatsApp groups and informal channels. This creates several challenges:
+•	Important opportunities get lost in chat history 
+•	No centralized place to discover opportunities 
+•	Organizations struggle to reach the right volunteers 
+•	Volunteers miss opportunities due to information overload 
+Volunteer Connect was built to solve this by centralizing discovery and connection.
 
-Currently, two official plugins are available:
+ Solution
+Volunteer Connect provides:
+•	A centralized platform for volunteer opportunities 
+•	Easy discovery of opportunities based on categories or interests 
+•	A structured posting system for organizations 
+•	Improved visibility and accessibility for volunteers 
+•	Reduced reliance on scattered WhatsApp communication 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+ Features
+•	User registration and login (in progress / completed) 
+•	Browse volunteer opportunities 
+•	Post opportunities (for organizations) 
+•	Categorized listings 
+•	Simple and accessible UI 
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
+ Current Status
+•	Frontend: Completed 
+•	Backend: In progress (deployment ongoing) 
+•	Improvements: Enhancing registration flow and system stability 
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+ Future Improvements
+•	Add recommendation system for volunteer matching 
+•	SMS/email notifications for new opportunities 
+•	Mobile-first optimization 
+•	AI-based matching between users and opportunities 
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+ Motivation
+This project was built with the goal of improving access to volunteering opportunities in local communities by reducing friction in discovery and communication.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Author
+Faith – Software Engineering Student
+Passionate about building tech for social impact and community empowerment.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
