@@ -1,4 +1,6 @@
  Volunteer Connect
+
+
 Overview
 Volunteer Connect is a platform that connects individuals seeking volunteer opportunities with organizations offering them. It also allows organizations to easily post and manage volunteer opportunities in one place.
 The goal is to solve the problem of fragmented communication channels—especially WhatsApp groups—where opportunities are easily lost in chat noise and become difficult to track or access.
