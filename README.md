@@ -32,6 +32,8 @@ Volunteer Connect provides:
 
  Current Status
 •	Frontend: Completed 
+link:
+https://volunteer-gigs-1kno.vercel.app/
 •	Backend: In progress (deployment ongoing) 
 •	Improvements: Enhancing registration flow and system stability 
 
