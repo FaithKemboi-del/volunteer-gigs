@@ -2,7 +2,7 @@
 // Instead of writing fetch() calls everywhere, we write them once here
 // and import them wherever we need them
 
-const BASE_URL = 'https://volunteer-gigs-backend-production.up.railway.app'
+const BASE_URL = 'https://volunteer-gigs-backend-1.onrender.com'
 
 // ============================================================
 // AUTH
