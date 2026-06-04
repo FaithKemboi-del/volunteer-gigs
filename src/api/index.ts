@@ -133,3 +133,46 @@ export const getAdminStats = async (token: string) => {
   if (!response.ok) throw new Error('Unauthorized')
   return response.json()
 }
+
+
+// ============================================================
+// OPPORTUNITIES
+// ============================================================
+
+export const getOpportunities = async () => {
+  const response = await fetch(`${BASE_URL}/opportunities/`)
+  if (!response.ok) throw new Error('Failed to fetch opportunities')
+  return response.json()
+}
+
+export const createOpportunity = async (token: string, data: {
+  title: string
+  organization: string
+  category: string
+  location: string
+  description: string
+  full_description?: string
+  activities: string
+  timing: string
+  total_slots: number
+  image?: string
+}) => {
+  const response = await fetch(`${BASE_URL}/opportunities/?token=${token}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.detail)
+  }
+  return response.json()
+}
+
+export const deleteOpportunity = async (token: string, id: number) => {
+  const response = await fetch(`${BASE_URL}/opportunities/${id}?token=${token}`, {
+    method: 'DELETE',
+  })
+  if (!response.ok) throw new Error('Failed to delete opportunity')
+  return response.json()
+}
