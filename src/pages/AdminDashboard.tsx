@@ -43,13 +43,18 @@ function AdminDashboard() {
 
   const token = localStorage.getItem('adminToken')
 
+  
+
   useEffect(() => {
-    if (!token) {
-      navigate('/admin/login')
-      return
-    }
-    loadData()
-  }, [])
+  if (!token) {
+    navigate('/admin/login')
+    return
+  }
+  loadData().catch(() => {
+    localStorage.removeItem('adminToken')
+    navigate('/admin/login')
+  })
+}, [])
 
   const loadData = async () => {
     try {
