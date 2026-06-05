@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import type { Opportunity } from '../types'
 
 const categoryColors: Record<string, string> = {
   'Animal Welfare': 'bg-orange-100 text-orange-700',
@@ -11,16 +10,21 @@ const categoryColors: Record<string, string> = {
 }
 
 interface OpportunityCardProps {
-  opportunity: Opportunity
-  linkTo?: string
+  opportunity: any
 }
 
 function OpportunityCard({ opportunity }: OpportunityCardProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
-  const displayDescription: string = isExpanded && opportunity.fullDescription
-    ? opportunity.fullDescription
-    : opportunity.description.slice(0, 100) + '...'
+  // 🎓 activities comes as string from database e.g "Dog walking, Feeding"
+  // We convert it to array so we can use .map() on it
+  const activitiesList: string[] = typeof opportunity.activities === 'string'
+    ? opportunity.activities.split(',').map((a: string) => a.trim())
+    : opportunity.activities || []
+
+  const displayDescription: string = isExpanded && opportunity.full_description
+    ? opportunity.full_description
+    : (opportunity.description || '').slice(0, 100) + '...'
 
   return (
     <div className="
@@ -33,14 +37,14 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
       {/* IMAGE SECTION */}
       <div className="relative overflow-hidden h-52">
         <img
-          src={opportunity.image}
+          src={opportunity.image || 'https://placehold.co/600x400/1a3a5c/white?text=Volunteer+Gigs'}
           alt={opportunity.title}
           className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
         />
         <span className={`
           absolute top-3 left-3
           text-xs font-semibold px-3 py-1 rounded-full
-          ${categoryColors[opportunity.category]}
+          ${categoryColors[opportunity.category] || 'bg-gray-100 text-gray-700'}
         `}>
           {opportunity.category}
         </span>
@@ -59,7 +63,7 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
 
         <p className="text-gray-500 text-sm leading-relaxed mb-4 transition-all duration-300">
           {displayDescription}{' '}
-          {opportunity.fullDescription && (
+          {opportunity.full_description && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="text-[#38bdf8] font-semibold hover:underline focus:outline-none"
@@ -77,7 +81,7 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
 
         {/* Activity tags */}
         <div className="flex flex-wrap gap-1 mb-4">
-          {opportunity.activities.slice(0, 3).map((activity, i) => (
+          {activitiesList.slice(0, 3).map((activity: string, i: number) => (
             <span
               key={i}
               className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
