@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-navigation'
+import { useNavigate } from 'react-router-dom'
 import { getAdminBookings, getAdminRecommendations, getAdminStats, getOpportunities, createOpportunity, deleteOpportunity } from '../api'
 
 interface Booking {
