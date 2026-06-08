@@ -176,3 +176,28 @@ export const deleteOpportunity = async (token: string, id: number) => {
   if (!response.ok) throw new Error('Failed to delete opportunity')
   return response.json()
 }
+
+export const updateOpportunity = async (token: string, id: number, data: {
+  title: string
+  organization: string
+  category: string
+  location: string
+  description: string
+  full_description?: string
+  activities: string
+  timing: string
+  total_slots: number
+  image?: string
+  is_featured?: boolean
+}) => {
+  const response = await fetch(`${BASE_URL}/opportunities/${id}?token=${token}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.detail)
+  }
+  return response.json()
+}

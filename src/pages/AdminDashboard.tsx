@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getAdminBookings, getAdminRecommendations, getAdminStats, getOpportunities, createOpportunity, deleteOpportunity } from '../api'
+import { getAdminBookings, getAdminRecommendations, getAdminStats, getOpportunities, createOpportunity, deleteOpportunity, updateOpportunity } from '../api'
 
 interface Booking {
   id: number
@@ -44,6 +44,7 @@ interface OpportunityForm {
   timing: string
   total_slots: string
   image: string
+  is_featured: string
 }
 
 const emptyForm: OpportunityForm = {
@@ -57,6 +58,7 @@ const emptyForm: OpportunityForm = {
   timing: '',
   total_slots: '',
   image: '',
+  is_featured: 'false',
 }
 
 const categoryOptions = [
@@ -65,6 +67,7 @@ const categoryOptions = [
   'Education',
   'Environment',
   'Community',
+  'Event',
 ]
 
 function AdminDashboard() {
@@ -79,6 +82,7 @@ function AdminDashboard() {
   const [opportunityForm, setOpportunityForm] = useState<OpportunityForm>(emptyForm)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null)
+  const [editingId, setEditingId] = useState<number | null>(null)
 
   const token = localStorage.getItem('adminToken')
 
@@ -113,28 +117,66 @@ function AdminDashboard() {
   }
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setOpportunityForm(prev => ({ ...prev, [name]: value }))
+    const { name, value, type } = e.target
+    const checked = (e.target as HTMLInputElement).checked
+    setOpportunityForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (checked ? 'true' : 'false') : value
+    }))
   }
 
   const handleAddOpportunity = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     try {
-      await createOpportunity(token!, {
-        ...opportunityForm,
-        total_slots: Number(opportunityForm.total_slots),
-      })
+      if (editingId) {
+        // 🎓 Edit mode - update existing opportunity
+        await updateOpportunity(token!, editingId, {
+          ...opportunityForm,
+          total_slots: Number(opportunityForm.total_slots),
+          is_featured: opportunityForm.is_featured === 'true',
+        })
+        alert('✅ Opportunity updated successfully!')
+      } else {
+        // 🎓 Add mode - create new opportunity
+        await createOpportunity(token!, {
+          ...opportunityForm,
+          total_slots: Number(opportunityForm.total_slots),
+          is_featured: opportunityForm.is_featured === 'true',
+        })
+        alert('✅ Opportunity added successfully!')
+      }
       setOpportunityForm(emptyForm)
       setShowAddForm(false)
+      setEditingId(null)
       const data = await getOpportunities()
       setOpportunities(data)
-      alert('✅ Opportunity added successfully!')
     } catch (error) {
       alert('Something went wrong. Please try again!')
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const handleEdit = (opp: any) => {
+    // 🎓 Pre-fill the form with the opportunity's current data
+    setOpportunityForm({
+      title: opp.title,
+      organization: opp.organization,
+      category: opp.category,
+      location: opp.location,
+      description: opp.description,
+      full_description: opp.full_description || '',
+      activities: typeof opp.activities === 'string' ? opp.activities : opp.activities.join(', '),
+      timing: opp.timing,
+      total_slots: String(opp.total_slots),
+      image: opp.image || '',
+      is_featured: opp.is_featured ? 'true' : 'false',
+    })
+    setEditingId(opp.id)
+    setShowAddForm(true)
+    // 🎓 Scroll to top so user can see the form
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleDelete = async (id: number) => {
@@ -302,16 +344,23 @@ function AdminDashboard() {
           <div>
             <div className="flex justify-end mb-4">
               <button
-                onClick={() => setShowAddForm(!showAddForm)}
+                onClick={() => {
+                  setShowAddForm(!showAddForm)
+                  setEditingId(null)
+                  setOpportunityForm(emptyForm)
+                }}
                 className="bg-[#38bdf8] hover:bg-[#0ea5e9] text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition duration-200"
               >
                 {showAddForm ? '✕ Cancel' : '+ Add Opportunity'}
               </button>
             </div>
 
+            {/* ADD/EDIT FORM */}
             {showAddForm && (
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Add New Opportunity</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-4">
+                  {editingId ? '✏️ Edit Opportunity' : 'Add New Opportunity'}
+                </h3>
                 <form onSubmit={handleAddOpportunity} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-gray-700 block mb-1">Title *</label>
@@ -348,6 +397,19 @@ function AdminDashboard() {
                     <label className="text-sm font-medium text-gray-700 block mb-1">Image URL <span className="text-gray-400 font-normal">(optional)</span></label>
                     <input name="image" value={opportunityForm.image} onChange={handleFormChange} placeholder="https://..." className="w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#38bdf8]" />
                   </div>
+                  <div className="md:col-span-2 flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      name="is_featured"
+                      id="is_featured"
+                      checked={opportunityForm.is_featured === 'true'}
+                      onChange={handleFormChange}
+                      className="w-4 h-4 accent-[#38bdf8]"
+                    />
+                    <label htmlFor="is_featured" className="text-sm font-medium text-gray-700">
+                      ⭐ Show on Featured section on home page
+                    </label>
+                  </div>
                   <div className="md:col-span-2">
                     <label className="text-sm font-medium text-gray-700 block mb-1">Short Description *</label>
                     <textarea name="description" value={opportunityForm.description} onChange={handleFormChange} required rows={2} placeholder="Brief description shown on card..." className="w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#38bdf8] resize-none" />
@@ -358,19 +420,20 @@ function AdminDashboard() {
                   </div>
                   <div className="md:col-span-2">
                     <button type="submit" disabled={isSubmitting} className={`w-full py-3 rounded-xl font-bold text-white transition duration-200 ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#38bdf8] hover:bg-[#0ea5e9]'}`}>
-                      {isSubmitting ? '⏳ Adding...' : '✅ Add Opportunity'}
+                      {isSubmitting ? '⏳ Saving...' : editingId ? '✅ Save Changes' : '✅ Add Opportunity'}
                     </button>
                   </div>
                 </form>
               </div>
             )}
 
+            {/* OPPORTUNITIES LIST */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-100">
                     <tr>
-                      {['#', 'Title', 'Organization', 'Category', 'Location', 'Timing', 'Slots', 'Actions'].map((h) => (
+                      {['#', 'Title', 'Organization', 'Category', 'Location', 'Timing', 'Slots', 'Featured', 'Actions'].map((h) => (
                         <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
                       ))}
                     </tr>
@@ -388,14 +451,27 @@ function AdminDashboard() {
                         <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{opp.timing}</td>
                         <td className="px-4 py-3 text-sm text-gray-600">{opp.total_slots}</td>
                         <td className="px-4 py-3 text-sm">
-                          {deleteConfirmId === opp.id ? (
-                            <div className="flex gap-2">
-                              <button onClick={() => handleDelete(opp.id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-medium transition">Confirm</button>
-                              <button onClick={() => setDeleteConfirmId(null)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded-lg text-xs font-medium transition">Cancel</button>
-                            </div>
-                          ) : (
-                            <button onClick={() => setDeleteConfirmId(opp.id)} className="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1 rounded-lg text-xs font-medium transition">🗑️ Delete</button>
-                          )}
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${opp.is_featured ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'}`}>
+                            {opp.is_featured ? '⭐ Yes' : 'No'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEdit(opp)}
+                              className="bg-blue-100 hover:bg-blue-200 text-blue-600 px-3 py-1 rounded-lg text-xs font-medium transition"
+                            >
+                              ✏️ Edit
+                            </button>
+                            {deleteConfirmId === opp.id ? (
+                              <>
+                                <button onClick={() => handleDelete(opp.id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-medium transition">Confirm</button>
+                                <button onClick={() => setDeleteConfirmId(null)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded-lg text-xs font-medium transition">Cancel</button>
+                              </>
+                            ) : (
+                              <button onClick={() => setDeleteConfirmId(opp.id)} className="bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1 rounded-lg text-xs font-medium transition">🗑️ Delete</button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -411,7 +487,6 @@ function AdminDashboard() {
             </div>
           </div>
         )}
-
       </div>
     </div>
   )
